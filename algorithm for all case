@@ -1,0 +1,59 @@
+clc;
+clear;
+close all;
+
+% Parameters
+lb = [1, 1]; % Lower bounds (fake)
+ub = [10, 10]; % Upper bounds (fake)
+nv = length(lb); % Number of variables
+ns = 10; % Population size
+maxiter = 5; % Maximum iterations
+
+% Initialization
+pos = lb + (ub - lb) .* rand(ns, nv); % Initial positions
+vel = rand(ns, nv); % Initial velocities
+pbest = pos; % Personal best positions
+gbest = pos(1, :); % Global best (initially first position)
+f0 = rand(ns, 1); % Initial fitness (fake values)
+fmin0 = min(f0); % Initial global best fitness
+
+% Main PSO loop
+for ite = 1:maxiter
+    % Update velocities and positions (fake update)
+    vel = 0.5 * vel + rand(ns, nv) .* (pbest - pos) + rand(ns, nv) .* (gbest - pos);
+    pos = pos + vel;
+
+    % Boundary handling
+    pos = max(min(pos, ub), lb);
+
+    % Fake fitness evaluation
+    f1 = rand(ns, 1); % New fitness values (fake)
+
+    % Update personal bests
+    for i = 1:ns
+        if f1(i) < f0(i)
+            pbest(i, :) = pos(i, :);
+            f0(i) = f1(i);
+        end
+    end
+
+    % Update global best
+    [fminupd, index] = min(f0);
+    if fminupd < fmin0
+        gbest = pbest(index, :);
+        fmin0 = fminupd;
+    end
+
+    % Record best fitness
+    best(ite) = fminupd;
+end
+
+% Display results
+disp('Global best:');
+disp(gbest);
+
+% Plot PSO convergence
+plot(best);
+xlabel('Iteration');
+ylabel('Fitness function value');
+title('PSO Convergence Characteristic');
