@@ -1,0 +1,81 @@
+clc;
+clear;
+close all;
+
+% Parameters (example values, replace with actual data)
+nbs = 5; % Number of buses
+R = [0.1; 0.2; 0.15; 0.2]; % Resistance values (ohm)
+X = [0.2; 0.3; 0.25; 0.3]; % Reactance values (ohm)
+Pd = [100; 150; 200; 250; 300]; % Real power demand (KW)
+Qd = [50; 75; 100; 125; 150]; % Reactive power demand (KVAR)
+MVAb = 100; % Base MVA
+KVb = 13.8; % Base kV
+
+% Base impedance
+Zb = (KVb^2) / MVAb;
+
+% Per unit (pu) conversions
+Rpu = R / Zb;
+Xpu = X / Zb;
+Ppu = Pd / (MVAb * 1000);
+Qpu = Qd / (MVAb * 1000);
+Z = Rpu + 1i * Xpu;
+S = Ppu + 1i * Qpu;
+
+% Initialize
+tol = 0.0001;
+error = 1;
+iter = 1;
+V = ones(nbs, 1); % Initial voltage
+Iline = zeros(length(R),1); % Initial line current
+Vprev = zeros(nbs,1);
+
+while error >= tol
+    % Step 1: Calculate load current
+    Iload = conj(S ./ V);
+    
+    % Step 2: Backward sweep
+    for k = length(R):-1:1
+        % Simulate line current update (example logic)
+        Iline(k) = Iload(k); % Simplified
+    end
+    
+    % Step 3: Forward sweep
+    for k = 1:length(R)
+        % Simulate voltage update (example logic)
+        V(k) = V(k) - Iline(k) * Z(k); % Simplified
+    end
+    
+    % Error calculation
+    Vpresent = abs(V);
+    Verror = Vpresent - Vprev;
+    Vprev = Vpresent;
+    error = max(abs(Verror));
+    iter = iter + 1;
+end
+
+% Display results
+disp(['Number of iterations: ', num2str(iter)]);
+Rp = abs(Iline.^2) .* Rpu; % Real power loss
+Ql = (Iline.^2) .* Xpu; % Reactive power loss
+Plosskw = sum(Rp) * 100000; % Real power loss in KW
+Qlosskvar = sum(Ql) * 100000; % Reactive power loss in KVAR
+
+% Output
+PDcumulative = sum(Pd);
+QDcumulative = sum(Qd);
+Vmin = min(abs(V));
+Vmax = max(abs(V));
+
+fprintf('Cumulative real power demand (KW): %.2f\n', PDcumulative);
+fprintf('Cumulative reactive power demand (KVAR): %.2f\n', QDcumulative);
+fprintf('Total real power loss (KW): %.2f\n', Plosskw);
+fprintf('Total reactive power loss (KVAR): %.2f\n', Qlosskvar);
+fprintf('Minimum voltage (PU): %.4f\n', Vmin);
+fprintf('Maximum voltage (PU): %.4f\n', Vmax);
+
+% Plot
+plot(abs(V));
+xlabel('Bus Number');
+ylabel('Voltage (PU)');
+title('Voltage Profile');
