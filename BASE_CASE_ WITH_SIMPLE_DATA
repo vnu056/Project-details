@@ -1,18 +1,5 @@
- [FOR 33 BUS DATA] M. E. Baran and F. F. Wu, ”Network reconfiguration in distribution
- systems for loss reduction and load balancing,” in IEEE Transactions
- on Power Delivery, vol. 4, no. 2, pp. 1401-1407, April 1989, doi:
- 10.1109/61.25627.
- [FOR 69 BUS DATA]  M. E. Baran and F. F. Wu, ”Optimal capacitor placement on radial
- distribution systems,” in IEEE Transactions on Power Delivery, vol. 4,
- no. 1, pp. 725-734, Jan. 1989, doi: 10.1109/61.19265.
- [FOR 85 BUS DATA]  Das, Do, D. P. Kothari, and A. Kalam. ”Simple and efficient method for
- load flow solution of radial distribution networks.” International Journal
- of Electrical Power & Energy Systems, vol 17. no. 5, pp. 335-346, 1995,
- doi.org/10.1016/0142-0615(95)00050-0.
- [FOR 118 BUS DATA]  Zhang, Dong, Zhengcai Fu, and Liuchun Zhang. ”An improved TS
- algorithm for loss-minimum reconfiguration in large-scale distribution
- systems.” Electric power systems research, vol. 77, no. 5, pp. 685-694,
- 2007. doi.org/10.1016/j.epsr.2006.06.005.
- [FOR 136 BUS DATA]  Mantovani, Jos´ e RS, Fernando Casari, and Rub´en A. Romero.
- ”Reconfigurac ¸˜ ao de sistemas de distribuic¸˜ao radiais utilizando o crit´erio
- de queda de tens˜ao.” Controle and Automacao (2000): 150-159.
+ [FOR 33 BUS DATA] M. E. Baran and F. F. Wu, ”Network reconfiguration in distribution  systems for loss reduction and load balancing,” in IEEE Transactions on Power Delivery, vol. 4, no. 2, pp. 1401-1407, April 1989, doi:  10.1109/61.25627.
+ [FOR 69 BUS DATA]  M. E. Baran and F. F. Wu, ”Optimal capacitor placement on radial  distribution systems,” in IEEE Transactions on Power Delivery, vol. 4,  no. 1, pp. 725-734, Jan. 1989, doi: 10.1109/61.19265.
+ [FOR 85 BUS DATA]  Das, Do, D. P. Kothari, and A. Kalam. ”Simple and efficient method for load flow solution of radial distribution networks.” International Journal of Electrical Power & Energy Systems, vol 17. no. 5, pp. 335-346, 1995, doi.org/10.1016/0142-0615(95)00050-0.
+ [FOR 118 BUS DATA]  Zhang, Dong, Zhengcai Fu, and Liuchun Zhang. ”An improved TS  algorithm for loss-minimum reconfiguration in large-scale distribution  systems.” Electric power systems research, vol. 77, no. 5, pp. 685-694, 2007. doi.org/10.1016/j.epsr.2006.06.005.
+ [FOR 136 BUS DATA]  Mantovani, Jos´ e RS, Fernando Casari, and Rub´en A. Romero. ”Reconfigurac ¸˜ ao de sistemas de distribuic¸˜ao radiais utilizando o crit´erio de queda de tens˜ao.” Controle and Automacao (2000): 150-159.
