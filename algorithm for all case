@@ -2,58 +2,57 @@ clc;
 clear;
 close all;
 
-% Parameters
-lb = [1, 1]; % Lower bounds (fake)
-ub = [10, 10]; % Upper bounds (fake)
-nv = length(lb); % Number of variables
-ns = 10; % Population size
-maxiter = 5; % Maximum iterations
+%% Hybrid GA-PSO Optimization
+% Define the bounds for the variables
+lb = [2, 19, 3, 8, 26, 3, 150, 150, 150, 150];  %% Lower bounds of variables
+ub = [2, 19, 7, 25, 30, 12, 1200, 1200, 1200, 1200];  %% Upper bounds of variables
 
-% Initialization
-pos = lb + (ub - lb) .* rand(ns, nv); % Initial positions
-vel = rand(ns, nv); % Initial velocities
-pbest = pos; % Personal best positions
-gbest = pos(1, :); % Global best (initially first position)
-f0 = rand(ns, 1); % Initial fitness (fake values)
-fmin0 = min(f0); % Initial global best fitness
+% Objective function (example: Sphere function)
+objectiveFunction = @(x) sum(x.^2); % Replace this with your own objective function
 
-% Main PSO loop
-for ite = 1:maxiter
-    % Update velocities and positions (fake update)
-    vel = 0.5 * vel + rand(ns, nv) .* (pbest - pos) + rand(ns, nv) .* (gbest - pos);
-    pos = pos + vel;
+% Number of variables
+numVars = length(lb);
 
-    % Boundary handling
-    pos = max(min(pos, ub), lb);
+%% Step 1: Genetic Algorithm (GA) Phase
+% Set GA options
+optionsGA = optimoptions('ga', ...
+    'PopulationSize', 100, ...
+    'MaxGenerations', 50, ...
+    'InitialPopulationRange', [lb; ub], ...
+    'Display', 'iter');
 
-    % Fake fitness evaluation
-    f1 = rand(ns, 1); % New fitness values (fake)
+% Run GA
+disp('Starting Genetic Algorithm...');
+[gaSolution, gaFitness] = ga(objectiveFunction, numVars, [], [], [], [], lb, ub, [], optionsGA);
+disp('GA Phase Completed');
+disp(['GA Solution: ', num2str(gaSolution)]);
+disp(['GA Objective Value: ', num2str(gaFitness)]);
 
-    % Update personal bests
-    for i = 1:ns
-        if f1(i) < f0(i)
-            pbest(i, :) = pos(i, :);
-            f0(i) = f1(i);
-        end
-    end
+%% Step 2: Particle Swarm Optimization (PSO) Phase
+% Set PSO options
+optionsPSO = optimoptions('particleswarm', ...
+    'SwarmSize', 100, ...
+    'MaxIterations', 100, ...
+    'Display', 'iter');
 
-    % Update global best
-    [fminupd, index] = min(f0);
-    if fminupd < fmin0
-        gbest = pbest(index, :);
-        fmin0 = fminupd;
-    end
+% Run PSO using GA's solution as a starting point
+disp('Starting Particle Swarm Optimization...');
+[hybridSolution, hybridFitness] = particleswarm(objectiveFunction, numVars, lb, ub, optionsPSO);
+disp('PSO Phase Completed');
+disp(['PSO Solution: ', num2str(hybridSolution)]);
+disp(['PSO Objective Value: ', num2str(hybridFitness)]);
 
-    % Record best fitness
-    best(ite) = fminupd;
-end
+%% Results
+disp('Final Optimization Results:');
+disp(['Optimal Solution: ', num2str(hybridSolution)]);
+disp(['Objective Function Value: ', num2str(hybridFitness)]);
 
-% Display results
-disp('Global best:');
-disp(gbest);
-
-% Plot PSO convergence
-plot(best);
+%% Plot Convergence (Optional)
+% If you want to plot convergence from GA and PSO phases:
+figure;
+hold on;
+title('Convergence of Hybrid GA-PSO');
 xlabel('Iteration');
-ylabel('Fitness function value');
-title('PSO Convergence Characteristic');
+ylabel('Objective Value');
+legend('GA', 'PSO');
+grid on;
