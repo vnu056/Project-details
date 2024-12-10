@@ -4,55 +4,77 @@ close all;
 
 %% Hybrid GA-PSO Optimization
 % Define the bounds for the variables
-lb = [2, 19, 3, 8, 26, 3, 150, 150, 150, 150];  %% Lower bounds of variables
-ub = [2, 19, 7, 25, 30, 12, 1200, 1200, 1200, 1200];  %% Upper bounds of variables
+lb = [2, 19, 3, 8, 26, 3, 150, 150, 150, 150];  % Lower bounds
+ub = [2, 19, 7, 25, 30, 12, 1200, 1200, 1200, 1200];  % Upper bounds
 
 % Objective function (example: Sphere function)
-objectiveFunction = @(x) sum(x.^2); % Replace this with your own objective function
+objectiveFunction = @(x) sum(x.^2); % Replace with your actual objective function
 
 % Number of variables
 numVars = length(lb);
 
 %% Step 1: Genetic Algorithm (GA) Phase
-% Set GA options
-optionsGA = optimoptions('ga', ...
-    'PopulationSize', 100, ...
-    'MaxGenerations', 50, ...
-    'InitialPopulationRange', [lb; ub], ...
-    'Display', 'iter');
-
-% Run GA
 disp('Starting Genetic Algorithm...');
-[gaSolution, gaFitness] = ga(objectiveFunction, numVars, [], [], [], [], lb, ub, [], optionsGA);
+% GA Parameters
+PopulationSize = 100;
+MaxGenerations = 50;
+Pm = 0.1; % Mutation probability
+etam = 20; % Mutation distribution index
+
+% Initialize population
+population = rand(PopulationSize, numVars) .* (ub - lb) + lb;
+
+% Start GA loop
+for gen = 1:MaxGenerations
+    % Evaluate fitness
+    fitnessValues = arrayfun(objectiveFunction, population);
+
+    % Tournament Selection
+    MatingPoolIndices = TournamentSelection(fitnessValues, PopulationSize);
+    SelectedIndividuals = population(MatingPoolIndices, :);
+
+    % Crossover (single-point crossover)
+    offspring = Crossover(SelectedIndividuals);
+
+    % Mutation (polynomial mutation)
+    offspring = MutationPoly(offspring, Pm, etam, lb, ub);
+
+    % Replace population with offspring
+    population = offspring;
+
+    % Log best solution of this generation
+    [bestFitness, bestIdx] = min(fitnessValues);
+    bestSolutionGA = population(bestIdx, :);
+    disp(['Generation ', num2str(gen), ': Best Fitness = ', num2str(bestFitness)]);
+end
 disp('GA Phase Completed');
-disp(['GA Solution: ', num2str(gaSolution)]);
-disp(['GA Objective Value: ', num2str(gaFitness)]);
+disp(['GA Solution: ', num2str(bestSolutionGA)]);
+disp(['GA Objective Value: ', num2str(bestFitness)]);
 
 %% Step 2: Particle Swarm Optimization (PSO) Phase
-% Set PSO options
+disp('Starting Particle Swarm Optimization...');
+% PSO Parameters
+SwarmSize = 100;
+MaxIterations = 100;
+
+% Use GA solution as initial swarm
+initialSwarm = repmat(bestSolutionGA, SwarmSize, 1) + randn(SwarmSize, numVars) .* 0.1;
+
+% PSO Optimization
 optionsPSO = optimoptions('particleswarm', ...
-    'SwarmSize', 100, ...
-    'MaxIterations', 100, ...
+    'SwarmSize', SwarmSize, ...
+    'MaxIterations', MaxIterations, ...
+    'InitialSwarmMatrix', initialSwarm, ...
     'Display', 'iter');
 
-% Run PSO using GA's solution as a starting point
-disp('Starting Particle Swarm Optimization...');
+% Run PSO
 [hybridSolution, hybridFitness] = particleswarm(objectiveFunction, numVars, lb, ub, optionsPSO);
+
 disp('PSO Phase Completed');
-disp(['PSO Solution: ', num2str(hybridSolution)]);
-disp(['PSO Objective Value: ', num2str(hybridFitness)]);
+disp(['Hybrid Solution: ', num2str(hybridSolution)]);
+disp(['Hybrid Objective Value: ', num2str(hybridFitness)]);
 
 %% Results
 disp('Final Optimization Results:');
 disp(['Optimal Solution: ', num2str(hybridSolution)]);
 disp(['Objective Function Value: ', num2str(hybridFitness)]);
-
-%% Plot Convergence (Optional)
-% If you want to plot convergence from GA and PSO phases:
-figure;
-hold on;
-title('Convergence of Hybrid GA-PSO');
-xlabel('Iteration');
-ylabel('Objective Value');
-legend('GA', 'PSO');
-grid on;
