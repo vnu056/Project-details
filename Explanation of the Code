@@ -1,0 +1,20 @@
+Explanation of the Code
+Initialization:
+
+GA initializes a random population within bounds.
+PSO uses GA's best solution as the initial swarm.
+GA Phase:
+
+Fitness evaluation, tournament selection, crossover, and polynomial mutation are implemented for MaxGenerations.
+PSO Phase:
+
+Runs using particleswarm with initial swarm derived from GA.
+Functions:
+
+MutationPoly handles mutation for GA.
+TournamentSelection selects individuals for mating.
+Crossover generates offspring using single-point crossover.
+Results:
+
+The hybrid solution combines the strengths of GA and PSO to achieve optimized results.
+This code can be further customized for your specific objective function and problem constraints. Let me know if you need additional assistance!
