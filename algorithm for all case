@@ -1,3 +1,5 @@
+
+%%%%Full Code for Hybrid GA-PSO Main Script matlab Copy code%%%%%%%%%%%%%%
 clc;
 clear;
 close all;
@@ -78,3 +80,60 @@ disp(['Hybrid Objective Value: ', num2str(hybridFitness)]);
 disp('Final Optimization Results:');
 disp(['Optimal Solution: ', num2str(hybridSolution)]);
 disp(['Objective Function Value: ', num2str(hybridFitness)]);
+
+%%%%%%%%%%%%% Polynomial Mutation (MutationPoly.m) matlab Copy code
+function offspring = MutationPoly(offspring, Pm, etam, lb, ub)
+    [Np, D] = size(offspring); % Population size and number of variables
+
+    for i = 1:Np
+        r = rand;
+        if r < Pm % Mutation probability check
+            for j = 1:D
+                r = rand;
+                if r < 0.5
+                    delta = (2 * r)^(1 / (etam + 1)) - 1;
+                else
+                    delta = 1 - (2 * (1 - r))^(1 / (etam + 1));
+                end
+                offspring(i, j) = offspring(i, j) + (ub(j) - lb(j)) * delta;
+            end
+            % Bound the mutated offspring
+            offspring(i, :) = max(offspring(i, :), lb);
+            offspring(i, :) = min(offspring(i, :), ub);
+        end
+    end
+end
+%%%%%%%%%%%%%%%%%%%% Tournament Selection (TournamentSelection.m) matlab Copy code
+function MatingPool = TournamentSelection(f, Np)
+    MatingPool = NaN(Np, 1);
+    indx = randperm(Np); % Shuffle indices
+
+    for i = 1:Np - 1
+        Candidate = [indx(i), indx(i + 1)];
+        CandidateObj = f(Candidate);
+        [~, ind] = min(CandidateObj);
+        MatingPool(i) = Candidate(ind);
+    end
+
+    Candidate = [indx(Np), indx(1)];
+    CandidateObj = f(Candidate);
+    [~, ind] = min(CandidateObj);
+    MatingPool(Np) = Candidate(ind);
+end
+%%%%%%%%%%%%%%%%%Crossover Function (Crossover.m) matlab Copy code
+function offspring = Crossover(parents)
+    [Np, D] = size(parents); % Number of parents and variables
+    offspring = NaN(Np, D);
+
+    for i = 1:2:Np - 1
+        p1 = parents(i, :);
+        p2 = parents(i + 1, :);
+        crossoverPoint = randi([1, D - 1]);
+        offspring(i, :) = [p1(1:crossoverPoint), p2(crossoverPoint + 1:end)];
+        offspring(i + 1, :) = [p2(1:crossoverPoint), p1(crossoverPoint + 1:end)];
+    end
+
+    if mod(Np, 2) == 1 % If odd number of parents
+        offspring(Np, :) = parents(Np, :);
+    end
+end
