@@ -1,0 +1,18 @@
+Polynomial Mutation (MutationPoly.m):
+
+%%% matlab Copy code
+function offspring = MutationPoly(offspring, Pm, etam, lb, ub)
+    % Mutation logic
+end
+Tournament Selection (TournamentSelection.m):
+
+%%%% matlab Copy code
+function MatingPool = TournamentSelection(f, Np)
+    % Tournament selection logic
+end
+Crossover (Crossover.m):
+
+%%%% matlab Copy code
+function offspring = Crossover(parents)
+    % Crossover logic
+end
